@@ -127,6 +127,28 @@ function opentide { python -c "from opentide.cli import main; main()" @args }
 opentide --help
 ```
 
+## Environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `OPENTIDE_REPO_ROOT` | Root of the detection content repository (objects, configurations). See [Repository setup](/docs/usage/repository-setup/) |
+| `OPENTIDE_DATA_ROOT` | Override bundled package data (advanced; defaults to wheel contents) |
+| `DEPLOYMENT_PLAN` | Default deployment plan for `deploy` and `validate query --live` |
+| `DEBUG` | Enable debug logging when set |
+
+## Verify installation
+
+```bash
+export OPENTIDE_REPO_ROOT=/path/to/detection-repo     # see Repository setup for other ways
+opentide validate          # should return OK
+opentide generate
+opentide --json info | python -c "import sys,json; print(json.load(sys.stdin)['version'])"
+opentide --json info
+opentide info         # concise tabular view
+```
+
+Expected: package version, rule/threat/objective counts, and per-platform capability flags.
+
 ### Live deploy SDKs (when needed)
 
 opentide ships platform logic in the wheel. **Third-party SDKs** are only required for live API deploy to some vendors — install them separately in the same environment if you use live deploy (not for validate, generate, or dry-run):
@@ -170,31 +192,6 @@ cd opentide
 uv sync --group dev
 uv run pre-commit install --install-hooks
 ```
-
-## Environment variables
-
-| Variable | Purpose |
-|----------|---------|
-| `OPENTIDE_REPO_ROOT` | Root of the detection content repository (objects, configurations) |
-| `OPENTIDE_DATA_ROOT` | Override bundled package data (advanced; defaults to wheel contents) |
-| `DEPLOYMENT_PLAN` | Default deployment plan for `deploy` and `validate query --live` |
-| `DEBUG` | Enable debug logging when set |
-
-Set the repo root before every command, or pass `--repo`. `opentide setup env --yes` writes `.env.example` with `OPENTIDE_REPO_ROOT` (copy to `.env`; opentide does not load dotenv automatically):
-
-```bash
-export OPENTIDE_REPO_ROOT=/path/to/detection-repo
-opentide validate
-```
-
-## Verify installation
-
-```bash
-opentide --json info | python -c "import sys,json; print(json.load(sys.stdin)['version'])"
-opentide --json info
-```
-
-Expected: package version, rule/threat/objective counts, and per-platform capability flags.
 
 ## Normative reference
 
