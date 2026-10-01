@@ -5,6 +5,42 @@ description: How opentide setup scaffolds detection repositories, CI, MCP, and a
 
 `opentide setup` is the primary onboarding entry point. It can run interactively or non-interactively with `--yes`.
 
+## First set opentide repository root
+
+The `opentide` & `opentide-mcp` binaries need to have the path to the opentide repository (objects, configurations, etc.); `opentide` discovers the path when run from the repository root folder but when set `OPENTIDE_REPO_ROOT` takes precedence on every `opentide` command. It is
+recommended to set it explicitly for a smooth experience (this is required for `opentide-mcp`).
+
+The root can be set either with a variable `OPENTIDE_REPO_ROOT` or a parameter `--repo`. See below for details:
+
+<Tabs items={['OPENTIDE_REPO_ROOT', '--repo', 'venv']}>
+
+<Tab value="OPENTIDE_REPO_ROOT">
+
+```bash
+export OPENTIDE_REPO_ROOT=/path/to/detection-repo
+```
+
+```powershell
+$env:OPENTIDE_REPO_ROOT = '/path/to/detection-repo'
+```
+</Tab>
+
+<Tab value="--repo">
+
+```bash
+opentide <command> --repo /path/to/detection-repo
+```
+
+</Tab>
+
+<Tab value="venv">
+
+`opentide setup env --yes`  writes `.env.example` with `OPENTIDE_REPO_ROOT=`.
+Copy to `.env`; opentide does not load dotenv automatically or to the script activating the virtual environment.
+
+</Tab>
+</Tabs>
+
 ## Interactive wizard
 
 ```bash
@@ -51,7 +87,7 @@ In non-interactive environments, `--yes` confirms only the flags shown in the co
 | `setup repo` | `objects/{threats,objectives,rules}/`, README, `.gitignore`; `--platform` also writes enabled platform TOML |
 | `setup platforms` | Enabled `.opentide/configurations/platforms/*.toml` |
 | `setup ci` | GitHub / GitLab / Azure workflow files (discovers enabled platforms; sets `OPENTIDE_REPO_ROOT`). A share stage is written only with `--sharing` |
-| `setup env` | `.env.example` with `OPENTIDE_REPO_ROOT`; ignores `.env` |
+| `setup env` | `.env.example` with `OPENTIDE_REPO_ROOT=`; ignores `.env` |
 | `setup hooks` | `.pre-commit-config.yaml` plus validate-on-commit Git hook |
 | `setup mcp` | Editor MCP config pointing at `opentide-mcp` |
 | `setup skills` | Agent skills: four authoring skills from the package, other slugs as the full OpenTideHQ/skills tree (`discover`, `show`, install) |
